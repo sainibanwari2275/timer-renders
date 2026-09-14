@@ -1,0 +1,38 @@
+# Speed + headless test: renders 60s of 4K countdown on a Windows runner.
+# Run manually from the Actions tab. Costs ~5 min of free (public-repo = unlimited) time.
+name: test-render
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install engine
+        run: npx --yes @veedstudio/openedit-cli install-engine
+
+      - name: Generate 60s test segment
+        run: node generate-segment.js 120 0 60 seg-test
+
+      - name: Render 60s 4K
+        run: |
+          $eng = Join-Path $env:APPDATA "veed-openedit\engine\veed-engine-cli.exe"
+          & $eng --template seg-test/timer.wv --record seg-test/out.mp4 --width 3840 --height 2160 --fps 30 --duration 60 --progress-output
+
+      - name: Probe result
+        run: |
+          ffprobe -v error -show_entries format=duration,size -of default=noprint_wrappers=1 seg-test/out.mp4
+          dir seg-test
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: test-60s
+          path: seg-test/out.mp4
