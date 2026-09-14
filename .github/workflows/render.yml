@@ -52,8 +52,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install engine
-        run: npx --yes @veedstudio/openedit-cli install-engine
+      - name: Install engine + ffmpeg
+        run: |
+          npx --yes @veedstudio/openedit-cli install-engine
+          npx --yes @veedstudio/openedit-cli install-ffmpeg
+          Add-Content $env:GITHUB_PATH (Join-Path $env:APPDATA "veed-openedit\ffmpeg\bin")
 
       - name: Generate segment
         run: |
