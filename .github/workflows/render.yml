@@ -90,6 +90,9 @@ jobs:
         with:
           path: segs
 
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
       - name: Stitch segments losslessly
         run: |
           ls segs/*/*.mp4 | sort -t- -k2 -n > list.txt
