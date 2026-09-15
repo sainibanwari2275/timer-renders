@@ -40,6 +40,6 @@ jobs:
           ffprobe -v error -show_entries format=duration,size -of default=noprint_wrappers=1 final-${{ inputs.label }}-4k.mp4
 
       - name: Publish to Releases
-        run: gh release create v${{ inputs.label }} final-${{ inputs.label }}-4k.mp4 --title "${{ inputs.label }} countdown 4K" --notes "Rendered in parallel segments, stitched losslessly."
+        run: gh release create v${{ inputs.label }} final-${{ inputs.label }}-4k.mp4 --repo ${{ github.repository }} --title "${{ inputs.label }} countdown 4K" --notes "Rendered in parallel segments, stitched losslessly."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
